@@ -8,18 +8,24 @@ public class GameController {
 
     private GameModel gameModel;
 
-    public GameController(final GameModel gameModel) {
+    public GameController() {
+
+    }
+
+    public void setGameModel(GameModel gameModel) {
         this.gameModel = gameModel;
     }
 
     public void onKeyPressed(KeyEvent evt) {
+        if (!(this.gameModel instanceof GameModel)) return;
+
         switch(evt.getKeyCode()) {
             case KeyEvent.VK_UP:
-                gameModel.moveCannonUp();
+                this.gameModel.moveCannonUp();
                 break;
 
             case KeyEvent.VK_DOWN:
-                gameModel.moveCannonDown();
+                this.gameModel.moveCannonDown();
                 break;
 
                 default:

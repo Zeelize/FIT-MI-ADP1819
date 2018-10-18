@@ -17,9 +17,11 @@ import javax.swing.JOptionPane;
 public class MainWindow extends JFrame {
 
 
-    public MainWindow(final GameController gameController, final GameModel gameModel) {
+    public MainWindow(final GameModel gameModel) {
         try {
-            final Canvas view = new Canvas(0, 0, 500, 500);
+            final Canvas view = new Canvas(0, 0, gameModel.getWidth(), gameModel.getHeight());
+            final GameController gameController = view.CreateController();
+            gameController.setGameModel(gameModel);
             view.setGameModel(gameModel);
 
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,7 +38,6 @@ public class MainWindow extends JFrame {
                 public void keyPressed(KeyEvent evt) {
                     // delegate to controller
                     gameController.onKeyPressed(evt);
-                    view.redraw();
                 }
             });
 

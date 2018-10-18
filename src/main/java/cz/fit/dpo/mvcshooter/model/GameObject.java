@@ -1,12 +1,9 @@
-package cz.fit.dpo.mvcshooter;
+package cz.fit.dpo.mvcshooter.model;
 
-/**
- *
- * @author Ondrej Stuchlik
- */
-public class Cannon {
+public class GameObject {
     private int posX = 100;
     private int posY = 100;
+
 
     public int getPosX() {
         return posX;

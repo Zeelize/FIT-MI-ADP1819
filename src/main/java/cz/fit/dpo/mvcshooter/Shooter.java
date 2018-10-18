@@ -14,13 +14,12 @@ public class Shooter {
     public static void main(String[] args) {
 
         final GameModel gameModel = new GameModel();
-        final GameController gameController = new GameController(gameModel);
 
         SwingUtilities.invokeLater(new Runnable(){
 
             @Override
             public void run() {
-               new MainWindow(gameController, gameModel).setVisible(true);
+               new MainWindow(gameModel).setVisible(true);
             }
         });
     }
