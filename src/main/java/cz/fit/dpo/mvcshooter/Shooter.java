@@ -1,6 +1,5 @@
 package cz.fit.dpo.mvcshooter;
 
-import cz.fit.dpo.mvcshooter.controller.GameController;
 import cz.fit.dpo.mvcshooter.model.GameModel;
 import cz.fit.dpo.mvcshooter.view.MainWindow;
 import javax.swing.SwingUtilities;

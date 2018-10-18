@@ -1,6 +1,6 @@
 package cz.fit.dpo.mvcshooter.view;
 
-import cz.fit.dpo.mvcshooter.model.*;
+import cz.fit.dpo.mvcshooter.model.entity.*;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -12,9 +12,6 @@ import javax.imageio.ImageIO;
  * @author Ondrej Stuchlik
  */
 public class GraphicsDrawer {
-    private static final int INFO_X = 5;
-    private static final int INFO_Y = 15;
-    
     private BufferedImage cannonImage;
     private BufferedImage enemyImage1;
     private BufferedImage enemyImage2;
@@ -58,7 +55,7 @@ public class GraphicsDrawer {
                 collision.getPosY() - collisionImage.getHeight()/2, null);
     }
     
-    public void drawInfo(Graphics g, ModelInfo info) {
+    public void drawInfo(Graphics g, GameInfo info) {
         g.drawString(info.getText(), info.getPosX(), info.getPosY());
     }
     

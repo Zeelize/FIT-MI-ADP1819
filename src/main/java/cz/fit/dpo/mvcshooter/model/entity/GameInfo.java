@@ -1,10 +1,10 @@
-package cz.fit.dpo.mvcshooter.model;
+package cz.fit.dpo.mvcshooter.model.entity;
 
-public class ModelInfo extends GameObject {
+public class GameInfo extends GameObject {
 
     private int score;
 
-    public ModelInfo(int score) {
+    public GameInfo(int score) {
         this.score = score;
         this.setPosX(10);
         this.setPosY(10);

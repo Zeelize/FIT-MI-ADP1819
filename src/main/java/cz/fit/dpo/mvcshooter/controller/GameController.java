@@ -17,7 +17,7 @@ public class GameController {
     }
 
     public void onKeyPressed(KeyEvent evt) {
-        if (!(this.gameModel instanceof GameModel)) return;
+        if (this.gameModel == null) return;
 
         switch(evt.getKeyCode()) {
             case KeyEvent.VK_UP:
@@ -28,8 +28,9 @@ public class GameController {
                 this.gameModel.moveCannonDown();
                 break;
 
-                default:
-                    break;
+            case KeyEvent.VK_SPACE:
+                System.out.println("Space pressed!");
+                break;
         }
     }
 }

@@ -1,4 +1,4 @@
-package cz.fit.dpo.mvcshooter.model;
+package cz.fit.dpo.mvcshooter.model.entity;
 
 public class GameObject {
     private int posX = 100;

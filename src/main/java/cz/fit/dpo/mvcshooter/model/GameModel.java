@@ -2,6 +2,9 @@ package cz.fit.dpo.mvcshooter.model;
 
 import cz.fit.dpo.mvcshooter.abstractFactory.DefaultGameObjectFactory;
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
+import cz.fit.dpo.mvcshooter.model.entity.Cannon;
+import cz.fit.dpo.mvcshooter.model.entity.Enemy;
+import cz.fit.dpo.mvcshooter.model.entity.GameInfo;
 import cz.fit.dpo.mvcshooter.observer.IObservable;
 import cz.fit.dpo.mvcshooter.observer.IObserver;
 
@@ -25,10 +28,10 @@ public class GameModel implements IObservable {
 
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
-            int x = 2 * cannon.getPosX() + random.nextInt(this.width - 2 * cannon.getPosX());
+            int x = (this.width / 3) + random.nextInt(this.width - (this.width / 3));
             int y = random.nextInt(this.height);
 
-            Enemy enemy = new Enemy();
+            Enemy enemy = this.goFact.createEnemy();
             enemy.setPosX(x);
             enemy.setPosY(y);
 
@@ -56,17 +59,19 @@ public class GameModel implements IObservable {
         return enemies;
     }
 
-    public ModelInfo getInfo() {
-        return this.goFact.createModelInfo(this);
+    public GameInfo getInfo() {
+        return this.goFact.createGameInfo(this);
     }
 
     public void moveCannonDown() {
+        if (cannon.getPosY() + this.moveStep > this.height) return;
         cannon.setPosY(cannon.getPosY() + this.moveStep);
 
         this.notifyObservers();
     }
 
     public void moveCannonUp() {
+        if (cannon.getPosY() + this.moveStep - 50 < 0) return;
         cannon.setPosY(cannon.getPosY() - this.moveStep);
 
         this.notifyObservers();
@@ -77,7 +82,7 @@ public class GameModel implements IObservable {
         this.myObservers.add(observer);
     }
 
-    public void deattachObserver(IObserver observer) {
+    public void detachObserver(IObserver observer) {
         this.myObservers.remove(observer);
     }
 

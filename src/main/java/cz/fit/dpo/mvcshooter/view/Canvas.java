@@ -1,7 +1,7 @@
 package cz.fit.dpo.mvcshooter.view;
 
 import cz.fit.dpo.mvcshooter.controller.GameController;
-import cz.fit.dpo.mvcshooter.model.Enemy;
+import cz.fit.dpo.mvcshooter.model.entity.Enemy;
 import cz.fit.dpo.mvcshooter.model.GameModel;
 import cz.fit.dpo.mvcshooter.observer.IObserver;
 
@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 
 public class Canvas extends JPanel implements IObserver {
-    GraphicsDrawer drawer = new GraphicsDrawer();
+    private GraphicsDrawer drawer = new GraphicsDrawer();
     private GameModel gameModel;
 
 
@@ -26,7 +26,7 @@ public class Canvas extends JPanel implements IObserver {
     
     public void setGameModel(GameModel gameModel) {
         if (this.gameModel != null && this.gameModel != gameModel) {
-            this.gameModel.deattachObserver(this);
+            this.gameModel.detachObserver(this);
         }
 
         this.gameModel = gameModel;
@@ -44,11 +44,11 @@ public class Canvas extends JPanel implements IObserver {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);    
-        drawer.drawCannon(g, this.gameModel.getCannon());
-        drawer.drawInfo(g, this.gameModel.getInfo());
+        this.drawer.drawCannon(g, this.gameModel.getCannon());
+        this.drawer.drawInfo(g, this.gameModel.getInfo());
 
         for (Enemy e: this.gameModel.getEnemies()) {
-            drawer.drawEnemy(g, e);
+            this.drawer.drawEnemy(g, e);
         }
     }
     

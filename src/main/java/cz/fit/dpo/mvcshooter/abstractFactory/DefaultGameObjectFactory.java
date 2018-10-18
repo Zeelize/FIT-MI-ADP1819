@@ -1,6 +1,7 @@
 package cz.fit.dpo.mvcshooter.abstractFactory;
 
 import cz.fit.dpo.mvcshooter.model.*;
+import cz.fit.dpo.mvcshooter.model.entity.*;
 
 public class DefaultGameObjectFactory implements IGameObjectFactory {
 
@@ -20,7 +21,7 @@ public class DefaultGameObjectFactory implements IGameObjectFactory {
         return new Collision();
     }
 
-    public ModelInfo createModelInfo(GameModel model) {
-        return new ModelInfo(model.getScore());
+    public GameInfo createGameInfo(GameModel model) {
+        return new GameInfo(model.getScore());
     }
 }
