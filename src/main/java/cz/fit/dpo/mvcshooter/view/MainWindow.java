@@ -3,12 +3,10 @@ package cz.fit.dpo.mvcshooter.view;
 import cz.fit.dpo.mvcshooter.controller.GameController;
 import cz.fit.dpo.mvcshooter.model.GameModel;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,7 +17,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(final GameModel gameModel) {
         try {
-            final Canvas view = new Canvas(0, 0, gameModel.getWidth(), gameModel.getHeight());
+            final Canvas view = new Canvas(0, 0, gameModel.getConfWidth(), gameModel.getConfHeight());
             final GameController gameController = view.CreateController();
             gameController.setGameModel(gameModel);
             view.setGameModel(gameModel);

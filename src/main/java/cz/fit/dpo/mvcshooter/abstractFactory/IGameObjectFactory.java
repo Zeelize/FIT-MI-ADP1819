@@ -1,6 +1,5 @@
 package cz.fit.dpo.mvcshooter.abstractFactory;
 
-import cz.fit.dpo.mvcshooter.model.*;
 import cz.fit.dpo.mvcshooter.model.entity.*;
 
 public interface IGameObjectFactory {
@@ -8,5 +7,6 @@ public interface IGameObjectFactory {
     Enemy createEnemy();
     Missile createMissile();
     Collision createCollision();
-    GameInfo createGameInfo(GameModel model);
+
+    GameInfo createGameInfo();
 }

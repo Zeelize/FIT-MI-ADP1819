@@ -29,7 +29,23 @@ public class GameController {
                 break;
 
             case KeyEvent.VK_SPACE:
-                System.out.println("Space pressed!");
+                this.gameModel.shootCanon();
+                break;
+
+            case KeyEvent.VK_W:
+                this.gameModel.aimCanonUp();
+                break;
+
+            case KeyEvent.VK_S:
+                this.gameModel.aimCanonDown();
+                break;
+
+            case KeyEvent.VK_A:
+                this.gameModel.incCanonPower();
+                break;
+
+            case KeyEvent.VK_D:
+                this.gameModel.decCannonPower();
                 break;
         }
     }

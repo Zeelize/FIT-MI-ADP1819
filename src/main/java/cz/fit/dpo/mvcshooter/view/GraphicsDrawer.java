@@ -2,10 +2,10 @@ package cz.fit.dpo.mvcshooter.view;
 
 import cz.fit.dpo.mvcshooter.model.entity.*;
 
-import java.awt.Graphics;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -17,6 +17,8 @@ public class GraphicsDrawer {
     private BufferedImage enemyImage2;
     private BufferedImage missileImage;
     private BufferedImage collisionImage;
+
+    private Graphics g;
  
 
     public GraphicsDrawer() {
@@ -29,6 +31,35 @@ public class GraphicsDrawer {
         } catch (IOException ex) {
             ex.printStackTrace(System.err);
         }
+    }
+
+    public void setGraphics(Graphics g) {
+        this.g = g;
+    }
+
+    public void visitCannon(Cannon c) {
+        if (g == null) return;
+        this.drawCannon(g, c);
+    }
+
+    public void visitEnemy(Enemy e) {
+        if (g == null) return;
+        this.drawEnemy(g, e);
+    }
+
+    public void visitCollision(Collision c) {
+        if (g == null) return;
+        this.drawCollision(g, c);
+    }
+
+    public void visitMissile(Missile m) {
+        if (g == null) return;
+        this.drawMissile(g, m);
+    }
+
+    public void visitGameInfo(GameInfo i) {
+        if (g == null) return;
+        this.drawInfo(g, i);
     }
 
     public void drawCannon(Graphics g, Cannon cannon) {
