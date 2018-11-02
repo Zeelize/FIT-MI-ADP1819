@@ -15,17 +15,20 @@ public class Missile extends GameObject {
         this.initSpeed = s;
         this.initX = x;
         this.initY = y;
-        this.initTime = System.currentTimeMillis();
+        this.initTime = 0;
+        //this.initTime = System.currentTimeMillis();
 
         this.setPosX(x);
         this.setPosY(y);
     }
 
     public void move() {
-        long lifetime = System.currentTimeMillis() - this.initTime;
+        //long lifetime = System.currentTimeMillis() - this.initTime;
+        long lifetime = ++initTime;
+        double radians = Math.toRadians(initAngle);
 
-        int nx = (int) (initX + (initSpeed + lifetime * Math.cos(initAngle)));
-        int ny = (int) (initX + (initSpeed + lifetime * Math.cos(initAngle)));
+        int nx = (int) (initX + (initSpeed) * lifetime * Math.cos(radians));
+        int ny = (int) ((initY + (initSpeed) * initTime * Math.sin(radians)) + 0.01 * (initTime * initTime));
 
         this.setPosX(nx);
         this.setPosY(ny);

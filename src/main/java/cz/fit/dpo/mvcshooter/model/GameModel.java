@@ -149,18 +149,22 @@ public class GameModel implements IObservable {
 
     public void aimCanonUp() {
         this.cannon.aimUp();
+        //this.notifyObservers();
     }
 
     public void aimCanonDown() {
         this.cannon.aimDown();
+        //this.notifyObservers();
     }
 
     public void incCanonPower() {
         this.cannon.incPower();
+        //this.notifyObservers();
     }
 
     public void decCannonPower() {
         this.cannon.decPower();
+        //this.notifyObservers();
     }
 
     public ArrayList<GameObject> getGameObjects() {

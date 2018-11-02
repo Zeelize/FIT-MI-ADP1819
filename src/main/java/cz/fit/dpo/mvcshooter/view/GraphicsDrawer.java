@@ -1,6 +1,7 @@
 package cz.fit.dpo.mvcshooter.view;
 
 import cz.fit.dpo.mvcshooter.model.entity.*;
+import cz.fit.dpo.mvcshooter.visitor.IVisitor;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.io.IOException;
  *
  * @author Ondrej Stuchlik
  */
-public class GraphicsDrawer {
+public class GraphicsDrawer implements IVisitor {
     private BufferedImage cannonImage;
     private BufferedImage enemyImage1;
     private BufferedImage enemyImage2;

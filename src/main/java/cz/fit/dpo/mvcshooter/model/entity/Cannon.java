@@ -10,7 +10,7 @@ public class Cannon extends GameObject {
     protected float speed = 10.0f;
     protected float angle = 0.0f;
 
-    protected float confAimStep = 0.2f;
+    protected float confAngle = 1.0f;
     protected float confPower = 1.0f;
 
 
@@ -41,11 +41,13 @@ public class Cannon extends GameObject {
     }
 
     public void aimUp() {
-        this.angle += this.confAimStep;
+        if (this.angle + this.confAngle > 90.0f) return;
+        this.angle += this.confAngle;
     }
 
     public void aimDown() {
-        this.angle -= this.confAimStep;
+        if (this.angle - this.confAngle < -90.0f) return;
+        this.angle -= this.confAngle;
     }
 
     public void incPower() {
@@ -53,6 +55,7 @@ public class Cannon extends GameObject {
     }
 
     public void decPower() {
+        if (this.speed - this.confPower < 0) return;
         this.speed -= this.confPower;
     }
 
