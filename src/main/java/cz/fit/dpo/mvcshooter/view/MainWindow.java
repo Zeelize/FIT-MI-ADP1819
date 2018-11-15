@@ -1,7 +1,7 @@
 package cz.fit.dpo.mvcshooter.view;
 
 import cz.fit.dpo.mvcshooter.controller.GameController;
-import cz.fit.dpo.mvcshooter.model.GameModel;
+import cz.fit.dpo.mvcshooter.proxy.IGameModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.awt.event.KeyEvent;
 public class MainWindow extends JFrame {
 
 
-    public MainWindow(final GameModel gameModel) {
+    public MainWindow(final IGameModel gameModel) {
         try {
             final Canvas view = new Canvas(0, 0, gameModel.getConfWidth(), gameModel.getConfHeight());
             final GameController gameController = view.CreateController();

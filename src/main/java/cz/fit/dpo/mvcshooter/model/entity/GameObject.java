@@ -26,5 +26,18 @@ public abstract class GameObject {
     public void move() {
     }
 
+    public boolean collidesWith(GameObject other) {
+        boolean res = true;
+
+        int ax = this.getPosX();
+        int ay = getPosY();
+        int bx = other.getPosX();
+        int by = other.getPosY();
+
+        // todo compute
+
+        return res;
+    }
+
     public abstract void acceptVisitor(IVisitor visitor);
 }

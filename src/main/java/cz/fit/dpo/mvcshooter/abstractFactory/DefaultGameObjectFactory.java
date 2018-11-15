@@ -15,7 +15,7 @@ public class DefaultGameObjectFactory implements IGameObjectFactory {
     }
 
     public Cannon createCannon() {
-        return new Cannon();
+        return new Cannon(this);
     }
 
     public Enemy createEnemy() {
@@ -34,7 +34,8 @@ public class DefaultGameObjectFactory implements IGameObjectFactory {
                 this.model.getCannon().getPosX(),
                 this.model.getCannon().getPosY(),
                 this.model.getCannon().getSpeed(),
-                this.model.getCannon().getAngle()
+                this.model.getCannon().getAngle(),
+                this.model.getActiveMovementStrategy()
         );
     }
 

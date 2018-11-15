@@ -1,18 +1,18 @@
 package cz.fit.dpo.mvcshooter.controller;
 
-import cz.fit.dpo.mvcshooter.model.GameModel;
+import cz.fit.dpo.mvcshooter.proxy.IGameModel;
 
 import java.awt.event.KeyEvent;
 
 public class GameController {
 
-    private GameModel gameModel;
+    private IGameModel gameModel;
 
     public GameController() {
 
     }
 
-    public void setGameModel(GameModel gameModel) {
+    public void setGameModel(IGameModel gameModel) {
         this.gameModel = gameModel;
     }
 
@@ -46,6 +46,12 @@ public class GameController {
 
             case KeyEvent.VK_D:
                 this.gameModel.incCanonPower();
+                break;
+            case KeyEvent.VK_Q:
+                this.gameModel.switchMovementStrategy();
+                break;
+            case KeyEvent.VK_E:
+                this.gameModel.toggleShootingMode();
                 break;
         }
     }

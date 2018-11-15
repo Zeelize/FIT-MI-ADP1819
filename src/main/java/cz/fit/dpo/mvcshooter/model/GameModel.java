@@ -2,21 +2,21 @@ package cz.fit.dpo.mvcshooter.model;
 
 import cz.fit.dpo.mvcshooter.abstractFactory.DefaultGameObjectFactory;
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
+import cz.fit.dpo.mvcshooter.config.GameConfig;
 import cz.fit.dpo.mvcshooter.model.entity.*;
 import cz.fit.dpo.mvcshooter.observer.IObservable;
 import cz.fit.dpo.mvcshooter.observer.IObserver;
+import cz.fit.dpo.mvcshooter.proxy.IGameModel;
+import cz.fit.dpo.mvcshooter.strategy.IMovementStrategy;
+import cz.fit.dpo.mvcshooter.strategy.RandomMovementStrategy;
+import cz.fit.dpo.mvcshooter.strategy.SimpleMovementStrategy;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameModel implements IObservable {
-    private int confMoveStep = 10;
-    private int confWidth = 500;
-    private int confHeight = 500;
-    private int confMaxEnemies = 10;
-    private int confTimePeriod = 30;
-
+public class GameModel implements IObservable, IGameModel {
     private int score = 0;
 
 
@@ -28,7 +28,13 @@ public class GameModel implements IObservable {
     private IGameObjectFactory goFact = new DefaultGameObjectFactory(this);
     private Timer timer;
 
+    private final List<IMovementStrategy> movementStrategies = new ArrayList<IMovementStrategy>();
+    private int activeMovementStrategyIndex = 0;
+
     public GameModel() {
+        movementStrategies.add(new SimpleMovementStrategy());
+        movementStrategies.add(new RandomMovementStrategy());
+
         this.initTimer();
         this.initGameObjects();
     }
@@ -40,7 +46,7 @@ public class GameModel implements IObservable {
             public void run() {
                 moveGameObjects();
             }
-        }, 0, this.confTimePeriod);
+        }, 0, GameConfig.TIME_PERIOD);
     }
 
     protected void moveGameObjects() {
@@ -48,7 +54,21 @@ public class GameModel implements IObservable {
 
         removeBadMissiles();
 
+        handleCollisions();
+
         this.notifyObservers();
+    }
+
+    private void handleCollisions() {
+        for (Missile m : missiles) {
+            for (Enemy e : enemies) {
+                if (m.collidesWith(e)) {
+                    // todo remove e and m
+                    // todo create collision
+                    // todo increment score
+                }
+            }
+        }
     }
 
     protected void moveMissiles() {
@@ -79,7 +99,7 @@ public class GameModel implements IObservable {
         this.cannon = this.goFact.createCannon();
 
         this.enemies.clear();
-        for (int i = 0; i < this.confMaxEnemies; i++) {
+        for (int i = 0; i < GameConfig.MAX_ENEMIES; i++) {
             this.enemies.add(this.goFact.createEnemy());
         }
     }
@@ -89,11 +109,11 @@ public class GameModel implements IObservable {
     }
 
     public int getConfHeight() {
-        return confHeight;
+        return GameConfig.MAX_HEIGHT;
     }
 
     public int getConfWidth() {
-        return confWidth;
+        return GameConfig.MAX_WIDTH;
     }
 
     public Cannon getCannon() {
@@ -113,21 +133,21 @@ public class GameModel implements IObservable {
     }
 
     public void moveCannonDown() {
-        if (cannon.getPosY() + this.confMoveStep > this.confHeight) return;
-        cannon.setPosY(cannon.getPosY() + this.confMoveStep);
+        if (cannon.getPosY() + GameConfig.MOVE_STEP > GameConfig.MAX_HEIGHT) return;
+        cannon.setPosY(cannon.getPosY() + GameConfig.MOVE_STEP);
 
         this.notifyObservers();
     }
 
     public void moveCannonUp() {
-        if (cannon.getPosY() + this.confMoveStep - 50 < 0) return;
-        cannon.setPosY(cannon.getPosY() - this.confMoveStep);
+        if (cannon.getPosY() + GameConfig.MOVE_STEP - 50 < 0) return;
+        cannon.setPosY(cannon.getPosY() - GameConfig.MOVE_STEP);
 
         this.notifyObservers();
     }
 
     public void shootCanon() {
-        this.missiles.add(this.cannon.shoot(this.goFact));
+        this.missiles.addAll(this.cannon.shoot());
 
         this.notifyObservers();
     }
@@ -149,22 +169,26 @@ public class GameModel implements IObservable {
 
     public void aimCanonUp() {
         this.cannon.aimUp();
-        //this.notifyObservers();
+        this.notifyObservers();
     }
 
     public void aimCanonDown() {
         this.cannon.aimDown();
-        //this.notifyObservers();
+        this.notifyObservers();
     }
 
     public void incCanonPower() {
         this.cannon.incPower();
-        //this.notifyObservers();
+        this.notifyObservers();
     }
 
     public void decCannonPower() {
         this.cannon.decPower();
-        //this.notifyObservers();
+        this.notifyObservers();
+    }
+
+    public void switchMovementStrategy() {
+        activeMovementStrategyIndex = (activeMovementStrategyIndex + 1) % this.movementStrategies.size();
     }
 
     public ArrayList<GameObject> getGameObjects() {
@@ -176,5 +200,14 @@ public class GameModel implements IObservable {
         go.add(this.getInfo());
 
         return go;
+    }
+
+    public IMovementStrategy getActiveMovementStrategy() {
+        return this.movementStrategies.get(this.activeMovementStrategyIndex);
+    }
+
+    public void toggleShootingMode() {
+        this.cannon.toggleShootingMode();
+        notifyObservers();
     }
 }

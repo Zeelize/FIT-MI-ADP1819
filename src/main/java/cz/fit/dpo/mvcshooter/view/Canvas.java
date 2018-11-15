@@ -1,9 +1,9 @@
 package cz.fit.dpo.mvcshooter.view;
 
 import cz.fit.dpo.mvcshooter.controller.GameController;
-import cz.fit.dpo.mvcshooter.model.GameModel;
 import cz.fit.dpo.mvcshooter.model.entity.GameObject;
 import cz.fit.dpo.mvcshooter.observer.IObserver;
+import cz.fit.dpo.mvcshooter.proxy.IGameModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.awt.*;
 
 public class Canvas extends JPanel implements IObserver {
     private GraphicsDrawer drawer = new GraphicsDrawer();
-    private GameModel gameModel;
+    private IGameModel gameModel;
 
 
     public Canvas(int x, int y, int width, int height) {
@@ -21,8 +21,8 @@ public class Canvas extends JPanel implements IObserver {
         this.setPreferredSize(new Dimension(width,height));
         this.setVisible(true);        
     }
-    
-    public void setGameModel(GameModel gameModel) {
+
+    public void setGameModel(IGameModel gameModel) {
         if (this.gameModel != null && this.gameModel != gameModel) {
             this.gameModel.detachObserver(this);
         }

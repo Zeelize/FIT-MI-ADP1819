@@ -1,22 +1,38 @@
 package cz.fit.dpo.mvcshooter.model.entity;
 
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
+import cz.fit.dpo.mvcshooter.state.DoubleShootingMode;
+import cz.fit.dpo.mvcshooter.state.IShootingMode;
+import cz.fit.dpo.mvcshooter.state.SingleShootingMode;
 import cz.fit.dpo.mvcshooter.visitor.IVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Ondrej Stuchlik
  */
 public class Cannon extends GameObject {
+    protected static final IShootingMode singleShootingMode = new SingleShootingMode();
+    protected static final IShootingMode doubleShootingMode = new DoubleShootingMode();
+
     protected float speed = 10.0f;
     protected float angle = 0.0f;
+    protected IShootingMode shootingMode;
+    protected IGameObjectFactory goFact;
+    protected List<Missile> shootBatch;
 
     protected float confAngle = 1.0f;
     protected float confPower = 1.0f;
 
 
-    public Cannon() {
+    public Cannon(IGameObjectFactory goFact) {
         this.setPosX(30);
         this.setPosY(250);
+
+        this.shootingMode = singleShootingMode;
+
+        this.goFact = goFact;
 
     }
 
@@ -36,8 +52,28 @@ public class Cannon extends GameObject {
         this.speed = speed;
     }
 
-    public Missile shoot(IGameObjectFactory goFact) {
-        return goFact.createMissile();
+    public List<Missile> shoot() {
+        this.shootBatch = new ArrayList<Missile>();
+
+        this.shootingMode.shoot(this);
+
+        return this.shootBatch;
+    }
+
+    public void toggleShootingMode() {
+        this.shootingMode.nextMode(this);
+    }
+
+    public void primitiveShoot() {
+        this.shootBatch.add(goFact.createMissile());
+    }
+
+    public void setDoubleShootingMode() {
+        shootingMode = doubleShootingMode;
+    }
+
+    public void setSingleShootingMode() {
+        shootingMode = singleShootingMode;
     }
 
     public void aimUp() {
