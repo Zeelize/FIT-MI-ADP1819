@@ -1,5 +1,6 @@
 package cz.fit.dpo.mvcshooter.controller;
 
+import cz.fit.dpo.mvcshooter.command.CannonShootCommand;
 import cz.fit.dpo.mvcshooter.proxy.IGameModel;
 
 import java.awt.event.KeyEvent;
@@ -29,13 +30,19 @@ public class GameController {
                 break;
 
             case KeyEvent.VK_SPACE:
-                this.gameModel.shootCanon();
+                //this.gameModel.shootCanon();
+                this.gameModel.registerCmd(new CannonShootCommand(this.gameModel));
                 break;
 
             case KeyEvent.VK_W:
                 this.gameModel.aimCanonDown();
                 break;
-
+            case KeyEvent.VK_Z:
+                if ((evt.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                    //CTRL+Z
+                    this.gameModel.undoLastCmd();
+                }
+                break;
             case KeyEvent.VK_S:
                 this.gameModel.aimCanonUp();
                 break;

@@ -6,7 +6,8 @@ public interface IGameObjectFactory {
     Cannon createCannon();
     Enemy createEnemy();
     Missile createMissile();
-    Collision createCollision();
+
+    Collision createCollision(int x, int y);
 
     GameInfo createGameInfo();
 }

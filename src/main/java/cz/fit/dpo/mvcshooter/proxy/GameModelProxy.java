@@ -1,5 +1,6 @@
 package cz.fit.dpo.mvcshooter.proxy;
 
+import cz.fit.dpo.mvcshooter.command.AbsGameCommand;
 import cz.fit.dpo.mvcshooter.model.entity.*;
 import cz.fit.dpo.mvcshooter.observer.IObserver;
 import cz.fit.dpo.mvcshooter.strategy.IMovementStrategy;
@@ -116,5 +117,25 @@ public class GameModelProxy implements IGameModel {
     @Override
     public void toggleShootingMode() {
         subject.toggleShootingMode();
+    }
+
+    @Override
+    public void registerCmd(AbsGameCommand cmd) {
+        subject.registerCmd(cmd);
+    }
+
+    @Override
+    public void undoLastCmd() {
+        subject.undoLastCmd();
+    }
+
+    @Override
+    public void setMemento(Object memento) {
+        subject.setMemento(memento);
+    }
+
+    @Override
+    public Object createMemento() {
+        return this.subject.createMemento();
     }
 }

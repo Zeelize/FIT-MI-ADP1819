@@ -2,6 +2,7 @@ package cz.fit.dpo.mvcshooter.model;
 
 import cz.fit.dpo.mvcshooter.abstractFactory.DefaultGameObjectFactory;
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
+import cz.fit.dpo.mvcshooter.command.AbsGameCommand;
 import cz.fit.dpo.mvcshooter.config.GameConfig;
 import cz.fit.dpo.mvcshooter.model.entity.*;
 import cz.fit.dpo.mvcshooter.observer.IObservable;
@@ -11,10 +12,8 @@ import cz.fit.dpo.mvcshooter.strategy.IMovementStrategy;
 import cz.fit.dpo.mvcshooter.strategy.RandomMovementStrategy;
 import cz.fit.dpo.mvcshooter.strategy.SimpleMovementStrategy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class GameModel implements IObservable, IGameModel {
     private int score = 0;
@@ -23,13 +22,18 @@ public class GameModel implements IObservable, IGameModel {
     private Cannon cannon;
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private ArrayList<Missile> missiles = new ArrayList<Missile>();
+    private ArrayList<Collision> collisions = new ArrayList<Collision>();
     private ArrayList<IObserver> myObservers = new ArrayList<IObserver>();
+
+    private Queue<AbsGameCommand> unexecutedCommands = new LinkedBlockingQueue<AbsGameCommand>();
+    private Stack<AbsGameCommand> executedCommands = new Stack<AbsGameCommand>();
 
     private IGameObjectFactory goFact = new DefaultGameObjectFactory(this);
     private Timer timer;
 
     private final List<IMovementStrategy> movementStrategies = new ArrayList<IMovementStrategy>();
     private int activeMovementStrategyIndex = 0;
+
 
     public GameModel() {
         movementStrategies.add(new SimpleMovementStrategy());
@@ -44,9 +48,18 @@ public class GameModel implements IObservable, IGameModel {
         this.timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                executeCommands();
                 moveGameObjects();
             }
         }, 0, GameConfig.TIME_PERIOD);
+    }
+
+    private void executeCommands() {
+        while (!this.unexecutedCommands.isEmpty()) {
+            AbsGameCommand cmd = unexecutedCommands.poll();
+            cmd.extExecute();
+            this.executedCommands.push(cmd);
+        }
     }
 
     protected void moveGameObjects() {
@@ -60,14 +73,38 @@ public class GameModel implements IObservable, IGameModel {
     }
 
     private void handleCollisions() {
+        Set<Enemy> enemiesToRemove = new HashSet<Enemy>();
+        Set<Missile> missilesToRemove = new HashSet<Missile>();
+        Set<Collision> collisionsToRemove = new HashSet<Collision>();
+
         for (Missile m : missiles) {
             for (Enemy e : enemies) {
                 if (m.collidesWith(e)) {
-                    // todo remove e and m
-                    // todo create collision
-                    // todo increment score
+                    this.score++;
+
+                    enemiesToRemove.add(e);
+                    missilesToRemove.add(m);
+
+                    this.collisions.add(goFact.createCollision(e.getPosX(), e.getPosY()));
                 }
             }
+        }
+
+        for (Collision c : this.collisions) {
+            if (c.getLifetime() > GameConfig.COLLISION_LIFETIME)
+                collisionsToRemove.add(c);
+        }
+
+        for (Enemy e : enemiesToRemove) {
+            this.enemies.remove(e);
+        }
+
+        for (Missile m : missilesToRemove) {
+            this.missiles.remove(m);
+        }
+
+        for (Collision c : collisionsToRemove) {
+            this.collisions.remove(c);
         }
     }
 
@@ -196,6 +233,7 @@ public class GameModel implements IObservable, IGameModel {
 
         go.addAll(this.missiles);
         go.addAll(this.enemies);
+        go.addAll(this.collisions);
         go.add(this.cannon);
         go.add(this.getInfo());
 
@@ -209,5 +247,38 @@ public class GameModel implements IObservable, IGameModel {
     public void toggleShootingMode() {
         this.cannon.toggleShootingMode();
         notifyObservers();
+    }
+
+    @Override
+    public void registerCmd(AbsGameCommand cmd) {
+        this.unexecutedCommands.add(cmd);
+    }
+
+    @Override
+    public void undoLastCmd() {
+        AbsGameCommand cmd = this.executedCommands.pop();
+        cmd.unexecute();
+    }
+
+    @Override
+    public void setMemento(Object memento) {
+        GameMemento m = (GameMemento) memento;
+        this.score = m.score;
+        //TODO
+    }
+
+    @Override
+    public Object createMemento() {
+        GameMemento m = new GameMemento();
+        m.score = this.score;
+        //TODO
+
+        return m;
+    }
+
+    private class GameMemento {
+        public int score;
+        public Cannon cannon;
+        //TODO
     }
 }

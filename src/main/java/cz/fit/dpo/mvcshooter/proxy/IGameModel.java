@@ -1,5 +1,6 @@
 package cz.fit.dpo.mvcshooter.proxy;
 
+import cz.fit.dpo.mvcshooter.command.AbsGameCommand;
 import cz.fit.dpo.mvcshooter.model.entity.*;
 import cz.fit.dpo.mvcshooter.observer.IObserver;
 import cz.fit.dpo.mvcshooter.strategy.IMovementStrategy;
@@ -50,4 +51,11 @@ public interface IGameModel {
 
     void toggleShootingMode();
 
+    void registerCmd(AbsGameCommand cmd);
+
+    void undoLastCmd();
+
+    void setMemento(Object memento);
+
+    Object createMemento();
 }

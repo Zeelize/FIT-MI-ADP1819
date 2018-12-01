@@ -7,4 +7,8 @@ public class Collision extends GameObject {
     public void acceptVisitor(IVisitor visitor) {
         visitor.visitCollision(this);
     }
+
+    public int getLifetime() {
+        return 1;
+    }
 }

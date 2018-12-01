@@ -12,11 +12,14 @@ public class GameConfig {
 
     public static final int TIME_PERIOD = 30;
     public static final int COLLIDE = 20;
+    public static final int COLLISION_MARGIN = 10;
+    public static final int COLLISION_LIFETIME = 2;
 
     public static final int INIT_SCORE = 30;
-    public static final int INIT_A = 30;
-    public static final int INIT_B = 30;
-    public static final int INIT_C = 30;
+    public static final int INIT_GRAVITY = 30;
+    public static final int INIT_VELOCITY = 30;
+    public static final int INIT_ANGLE = 30;
+
 
 
 }

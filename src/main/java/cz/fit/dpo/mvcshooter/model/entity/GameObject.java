@@ -1,5 +1,6 @@
 package cz.fit.dpo.mvcshooter.model.entity;
 
+import cz.fit.dpo.mvcshooter.config.GameConfig;
 import cz.fit.dpo.mvcshooter.visitor.IVisitor;
 
 public abstract class GameObject {
@@ -34,7 +35,8 @@ public abstract class GameObject {
         int bx = other.getPosX();
         int by = other.getPosY();
 
-        // todo compute
+        res = res && (Math.abs(ax - bx)) < GameConfig.COLLISION_MARGIN;
+        res = res && (Math.abs(ay - by)) < GameConfig.COLLISION_MARGIN;
 
         return res;
     }

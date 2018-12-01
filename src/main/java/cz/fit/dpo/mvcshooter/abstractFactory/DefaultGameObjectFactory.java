@@ -39,8 +39,12 @@ public class DefaultGameObjectFactory implements IGameObjectFactory {
         );
     }
 
-    public Collision createCollision() {
-        return new Collision();
+    public Collision createCollision(int x, int y) {
+        Collision c = new Collision();
+        c.setPosX(x);
+        c.setPosY(y);
+
+        return c;
     }
 
     public GameInfo createGameInfo() {
