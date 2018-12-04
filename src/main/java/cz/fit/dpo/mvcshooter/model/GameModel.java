@@ -17,12 +17,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class GameModel implements IObservable, IGameModel {
     private int score = 0;
-
-
     private Cannon cannon;
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private ArrayList<Missile> missiles = new ArrayList<Missile>();
     private ArrayList<Collision> collisions = new ArrayList<Collision>();
+
+    private final List<IMovementStrategy> movementStrategies = new ArrayList<IMovementStrategy>();
+    private int activeMovementStrategyIndex = 0;
+
     private ArrayList<IObserver> myObservers = new ArrayList<IObserver>();
 
     private Queue<AbsGameCommand> unexecutedCommands = new LinkedBlockingQueue<AbsGameCommand>();
@@ -30,10 +32,6 @@ public class GameModel implements IObservable, IGameModel {
 
     private IGameObjectFactory goFact = new DefaultGameObjectFactory(this);
     private Timer timer;
-
-    private final List<IMovementStrategy> movementStrategies = new ArrayList<IMovementStrategy>();
-    private int activeMovementStrategyIndex = 0;
-
 
     public GameModel() {
         movementStrategies.add(new SimpleMovementStrategy());
@@ -262,23 +260,23 @@ public class GameModel implements IObservable, IGameModel {
 
     @Override
     public void setMemento(Object memento) {
-        GameMemento m = (GameMemento) memento;
-        this.score = m.score;
-        //TODO
+        Memento m = (Memento) memento;
+        this.score = m.getScore();
+        this.cannon = m.getCannon();
+        this.activeMovementStrategyIndex = m.getActiveMovementStrategyIndex();
+        this.enemies = m.getEnemies();
+        this.missiles = m.getMissiles();
     }
 
     @Override
     public Object createMemento() {
-        GameMemento m = new GameMemento();
-        m.score = this.score;
-        //TODO
+        Memento m = new Memento();
+        m.setActiveMovementStrategyIndex(this.activeMovementStrategyIndex);
+        m.setCannon(this.cannon);
+        m.setEnemies(this.enemies);
+        m.setMissiles(this.missiles);
+        m.setScore(this.score);
 
         return m;
-    }
-
-    private class GameMemento {
-        public int score;
-        public Cannon cannon;
-        //TODO
     }
 }
