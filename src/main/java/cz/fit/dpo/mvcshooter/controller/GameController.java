@@ -36,6 +36,7 @@ public class GameController {
                 this.gameModel.registerCmd(new AimCannonDownCommand(this.gameModel));
                 break;
             case KeyEvent.VK_BACK_SPACE:
+                // todo fix
                 this.gameModel.registerCmd(new UndoLastCommand(this.gameModel));
                 break;
             case KeyEvent.VK_S:

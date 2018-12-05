@@ -64,6 +64,7 @@ public class GameModel implements IObservable, IGameModel {
 
     private void moveGameObjects() {
         moveMissiles();
+        moveEnemies();
         removeBadMissiles();
         handleCollisions();
         addEnemies();
@@ -110,6 +111,13 @@ public class GameModel implements IObservable, IGameModel {
     private void moveMissiles() {
         for (Missile m : this.missiles) {
             m.move();
+        }
+    }
+
+    private void moveEnemies() {
+        // todo check score and if at certain point, increase speed of enemies
+        for (Enemy e : this.enemies) {
+            e.move();
         }
     }
 
