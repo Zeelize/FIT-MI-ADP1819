@@ -1,6 +1,7 @@
 package cz.fit.dpo.mvcshooter.model.entity;
 
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
+import cz.fit.dpo.mvcshooter.config.GameConfig;
 import cz.fit.dpo.mvcshooter.state.DoubleShootingMode;
 import cz.fit.dpo.mvcshooter.state.IShootingMode;
 import cz.fit.dpo.mvcshooter.state.SingleShootingMode;
@@ -13,22 +14,22 @@ import java.util.List;
  * @author Ondrej Stuchlik
  */
 public class Cannon extends GameObject {
-    protected static final IShootingMode singleShootingMode = new SingleShootingMode();
-    protected static final IShootingMode doubleShootingMode = new DoubleShootingMode();
+    private static final IShootingMode singleShootingMode = new SingleShootingMode();
+    private static final IShootingMode doubleShootingMode = new DoubleShootingMode();
 
-    protected float speed = 10.0f;
-    protected float angle = 0.0f;
-    protected IShootingMode shootingMode;
-    protected IGameObjectFactory goFact;
-    protected List<Missile> shootBatch;
+    private float speed = GameConfig.INIT_SPEED;
+    private float angle = GameConfig.INIT_ANGLE;
+    private IShootingMode shootingMode;
+    private IGameObjectFactory goFact;
+    private List<Missile> shootBatch;
 
-    protected float confAngle = 1.0f;
-    protected float confPower = 1.0f;
+    private float angleStep = GameConfig.ANGLE_STEP;
+    private float speedStep = GameConfig.SPEED_STEP;
 
 
     public Cannon(IGameObjectFactory goFact) {
-        this.setPosX(30);
-        this.setPosY(250);
+        this.setPosX(GameConfig.INIT_CANNON_X);
+        this.setPosY(GameConfig.INIT_CANNON_Y);
 
         this.shootingMode = singleShootingMode;
 
@@ -53,7 +54,7 @@ public class Cannon extends GameObject {
     }
 
     public List<Missile> shoot() {
-        this.shootBatch = new ArrayList<Missile>();
+        this.shootBatch = new ArrayList<>();
 
         this.shootingMode.shoot(this);
 
@@ -77,22 +78,22 @@ public class Cannon extends GameObject {
     }
 
     public void aimUp() {
-        if (this.angle + this.confAngle > 90.0f) return;
-        this.angle += this.confAngle;
+        if (this.angle + this.angleStep > 90.0f) return;
+        this.angle += this.angleStep;
     }
 
     public void aimDown() {
-        if (this.angle - this.confAngle < -90.0f) return;
-        this.angle -= this.confAngle;
+        if (this.angle - this.angleStep < -90.0f) return;
+        this.angle -= this.angleStep;
     }
 
     public void incPower() {
-        this.speed += this.confPower;
+        this.speed += this.speedStep;
     }
 
     public void decPower() {
-        if (this.speed - this.confPower < 0) return;
-        this.speed -= this.confPower;
+        if (this.speed - this.speedStep < 0) return;
+        this.speed -= this.speedStep;
     }
 
     public void acceptVisitor(IVisitor visitor) {

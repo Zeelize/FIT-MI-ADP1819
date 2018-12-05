@@ -10,7 +10,6 @@ public class GameController {
     private IGameModel gameModel;
 
     public GameController() {
-
     }
 
     public void setGameModel(IGameModel gameModel) {
@@ -20,6 +19,7 @@ public class GameController {
     public void onKeyPressed(KeyEvent evt) {
         if (this.gameModel == null) return;
 
+        // todo commands for all
         switch(evt.getKeyCode()) {
             case KeyEvent.VK_UP:
                 this.gameModel.moveCannonUp();
@@ -30,27 +30,21 @@ public class GameController {
                 break;
 
             case KeyEvent.VK_SPACE:
-                //this.gameModel.shootCanon();
                 this.gameModel.registerCmd(new CannonShootCommand(this.gameModel));
                 break;
 
             case KeyEvent.VK_W:
                 this.gameModel.aimCanonDown();
                 break;
-            case KeyEvent.VK_Z:
-                if ((evt.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
-                    //CTRL+Z
-                    this.gameModel.undoLastCmd();
-                }
+            case KeyEvent.VK_BACK_SPACE:
+                this.gameModel.undoLastCmd();
                 break;
             case KeyEvent.VK_S:
                 this.gameModel.aimCanonUp();
                 break;
-
             case KeyEvent.VK_A:
                 this.gameModel.decCannonPower();
                 break;
-
             case KeyEvent.VK_D:
                 this.gameModel.incCanonPower();
                 break;
@@ -59,6 +53,9 @@ public class GameController {
                 break;
             case KeyEvent.VK_E:
                 this.gameModel.toggleShootingMode();
+                break;
+            case KeyEvent.VK_R:
+                // todo reload and do a stack of bullets
                 break;
         }
     }

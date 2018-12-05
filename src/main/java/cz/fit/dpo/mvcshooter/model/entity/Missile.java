@@ -3,38 +3,32 @@ package cz.fit.dpo.mvcshooter.model.entity;
 import cz.fit.dpo.mvcshooter.strategy.IMovementStrategy;
 import cz.fit.dpo.mvcshooter.visitor.IVisitor;
 
-public class Missile extends TimeLifeAwareGameObject {
+public class Missile extends GameObject {
 
-    protected int initX;
-    protected int initY;
-    protected float initSpeed;
-    protected float initAngle;
-    protected long initTime;
-    protected IMovementStrategy mStrat;
+    private int initY;
+    private int initX;
+    private float speed;
+    private float angle;
+    private long time;
+    private IMovementStrategy strategy;
 
     public Missile(int x, int y, float s, float a, IMovementStrategy strategy) {
-        this.initAngle = a;
-        this.initSpeed = s;
+        this.angle = a;
+        this.speed = s;
         this.initX = x;
         this.initY = y;
-        this.initTime = 0;
-        this.mStrat = strategy;
-        //this.initTime = System.currentTimeMillis();
+        this.time = 0;
+        this.strategy = strategy;
 
         this.setPosX(x);
         this.setPosY(y);
     }
 
     public void move() {
-        //long lifetime = System.currentTimeMillis() - this.initTime;
-        long lifetime = ++initTime;
-        //double radians = Math.toRadians(initAngle);
+        long lifetime = ++time;
 
-        int nx = mStrat.nextPosX(initX, initSpeed, initAngle, lifetime);
-        int ny = mStrat.nextPosY(initY, initSpeed, initAngle, lifetime);
-
-        //int nx = (int) (initX + (initSpeed) * lifetime * Math.cos(radians));
-        //int ny = (int) ((initY + (initSpeed) * initTime * Math.sin(radians)) + 0.01 * (initTime * initTime));
+        int nx = strategy.nextPosX(initX, speed, angle, lifetime);
+        int ny = strategy.nextPosY(initY, speed, angle, lifetime);
 
         this.setPosX(nx);
         this.setPosY(ny);

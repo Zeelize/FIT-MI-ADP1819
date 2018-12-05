@@ -10,25 +10,24 @@ import cz.fit.dpo.mvcshooter.observer.IObserver;
 import cz.fit.dpo.mvcshooter.proxy.IGameModel;
 import cz.fit.dpo.mvcshooter.strategy.IMovementStrategy;
 import cz.fit.dpo.mvcshooter.strategy.RandomMovementStrategy;
+import cz.fit.dpo.mvcshooter.strategy.RealisticMovementStrategy;
 import cz.fit.dpo.mvcshooter.strategy.SimpleMovementStrategy;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GameModel implements IObservable, IGameModel {
-    private int score = 0;
+    private final List<IMovementStrategy> movementStrategies = new ArrayList<>();
     private Cannon cannon;
-    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    private ArrayList<Missile> missiles = new ArrayList<Missile>();
-    private ArrayList<Collision> collisions = new ArrayList<Collision>();
-
-    private final List<IMovementStrategy> movementStrategies = new ArrayList<IMovementStrategy>();
+    private int score = GameConfig.INIT_SCORE;
+    private ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Missile> missiles = new ArrayList<>();
+    private ArrayList<Collision> collisions = new ArrayList<>();
     private int activeMovementStrategyIndex = 0;
+    private ArrayList<IObserver> myObservers = new ArrayList<>();
 
-    private ArrayList<IObserver> myObservers = new ArrayList<IObserver>();
-
-    private Queue<AbsGameCommand> unexecutedCommands = new LinkedBlockingQueue<AbsGameCommand>();
-    private Stack<AbsGameCommand> executedCommands = new Stack<AbsGameCommand>();
+    private Queue<AbsGameCommand> unexecutedCommands = new LinkedBlockingQueue<>();
+    private Stack<AbsGameCommand> executedCommands = new Stack<>();
 
     private IGameObjectFactory goFact = new DefaultGameObjectFactory(this);
     private Timer timer;
@@ -36,6 +35,7 @@ public class GameModel implements IObservable, IGameModel {
     public GameModel() {
         movementStrategies.add(new SimpleMovementStrategy());
         movementStrategies.add(new RandomMovementStrategy());
+        movementStrategies.add(new RealisticMovementStrategy());
 
         this.initTimer();
         this.initGameObjects();
@@ -60,20 +60,18 @@ public class GameModel implements IObservable, IGameModel {
         }
     }
 
-    protected void moveGameObjects() {
+    private void moveGameObjects() {
         moveMissiles();
-
         removeBadMissiles();
-
         handleCollisions();
-
+        addEnemies();
         this.notifyObservers();
     }
 
     private void handleCollisions() {
-        Set<Enemy> enemiesToRemove = new HashSet<Enemy>();
-        Set<Missile> missilesToRemove = new HashSet<Missile>();
-        Set<Collision> collisionsToRemove = new HashSet<Collision>();
+        Set<Enemy> enemiesToRemove = new HashSet<>();
+        Set<Missile> missilesToRemove = new HashSet<>();
+        Set<Collision> collisionsToRemove = new HashSet<>();
 
         for (Missile m : missiles) {
             for (Enemy e : enemies) {
@@ -89,6 +87,7 @@ public class GameModel implements IObservable, IGameModel {
         }
 
         for (Collision c : this.collisions) {
+            c.incLifetime();
             if (c.getLifetime() > GameConfig.COLLISION_LIFETIME)
                 collisionsToRemove.add(c);
         }
@@ -106,16 +105,14 @@ public class GameModel implements IObservable, IGameModel {
         }
     }
 
-    protected void moveMissiles() {
+    private void moveMissiles() {
         for (Missile m : this.missiles) {
             m.move();
         }
-
-
     }
 
-    protected void removeBadMissiles() {
-        ArrayList<Missile> rem = new ArrayList<Missile>();
+    private void removeBadMissiles() {
+        ArrayList<Missile> rem = new ArrayList<>();
 
         for (Missile m : this.missiles) {
             if (m.getPosX() > this.getConfWidth() || m.getPosX() < 0) {
@@ -130,7 +127,13 @@ public class GameModel implements IObservable, IGameModel {
         }
     }
 
-    public void initGameObjects() {
+    private void addEnemies() {
+        for (int i = enemies.size(); i < GameConfig.MAX_ENEMIES; i++) {
+            this.enemies.add(this.goFact.createEnemy());
+        }
+    }
+
+    private void initGameObjects() {
         this.cannon = this.goFact.createCannon();
 
         this.enemies.clear();
@@ -227,7 +230,7 @@ public class GameModel implements IObservable, IGameModel {
     }
 
     public ArrayList<GameObject> getGameObjects() {
-        ArrayList<GameObject> go = new ArrayList<GameObject>();
+        ArrayList<GameObject> go = new ArrayList<>();
 
         go.addAll(this.missiles);
         go.addAll(this.enemies);
