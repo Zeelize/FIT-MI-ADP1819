@@ -60,8 +60,18 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
+    public void pauseResumeGame() {
+        subject.pauseResumeGame();
+    }
+
+    @Override
     public void shootCanon() {
         subject.shootCanon();
+    }
+
+    @Override
+    public void reloadCannon() {
+        subject.reloadCannon();
     }
 
     @Override

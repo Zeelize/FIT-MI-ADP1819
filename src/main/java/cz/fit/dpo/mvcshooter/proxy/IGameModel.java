@@ -27,7 +27,11 @@ public interface IGameModel {
 
     void moveCannonUp();
 
+    void pauseResumeGame();
+
     void shootCanon();
+
+    void reloadCannon();
 
     void attachObserver(IObserver observer);
 

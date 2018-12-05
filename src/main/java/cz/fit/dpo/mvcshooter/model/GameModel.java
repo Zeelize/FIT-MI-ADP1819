@@ -3,6 +3,7 @@ package cz.fit.dpo.mvcshooter.model;
 import cz.fit.dpo.mvcshooter.abstractFactory.DefaultGameObjectFactory;
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
 import cz.fit.dpo.mvcshooter.command.AbsGameCommand;
+import cz.fit.dpo.mvcshooter.command.PauseResumeGameCommand;
 import cz.fit.dpo.mvcshooter.config.GameConfig;
 import cz.fit.dpo.mvcshooter.model.entity.*;
 import cz.fit.dpo.mvcshooter.observer.IObservable;
@@ -24,6 +25,7 @@ public class GameModel implements IObservable, IGameModel {
     private ArrayList<Missile> missiles = new ArrayList<>();
     private ArrayList<Collision> collisions = new ArrayList<>();
     private int activeMovementStrategyIndex = 0;
+    private boolean pause = false;
     private ArrayList<IObserver> myObservers = new ArrayList<>();
 
     private Queue<AbsGameCommand> unexecutedCommands = new LinkedBlockingQueue<>();
@@ -41,7 +43,7 @@ public class GameModel implements IObservable, IGameModel {
         this.initGameObjects();
     }
 
-    public void initTimer() {
+    private void initTimer() {
         this.timer = new Timer();
         this.timer.schedule(new TimerTask() {
             @Override
@@ -146,6 +148,10 @@ public class GameModel implements IObservable, IGameModel {
         return score;
     }
 
+    public boolean getPause() {
+        return pause;
+    }
+
     public int getConfHeight() {
         return GameConfig.MAX_HEIGHT;
     }
@@ -182,6 +188,17 @@ public class GameModel implements IObservable, IGameModel {
         cannon.setPosY(cannon.getPosY() - GameConfig.MOVE_STEP);
 
         this.notifyObservers();
+    }
+
+    @Override
+    public void pauseResumeGame() {
+        pause = !pause;
+        if (pause) {
+            timer.cancel();
+        } else {
+            initTimer();
+        }
+        notifyObservers();
     }
 
     public void shootCanon() {
@@ -225,6 +242,11 @@ public class GameModel implements IObservable, IGameModel {
         this.notifyObservers();
     }
 
+    public void reloadCannon() {
+        this.cannon.reload();
+        this.notifyObservers();
+    }
+
     public void switchMovementStrategy() {
         activeMovementStrategyIndex = (activeMovementStrategyIndex + 1) % this.movementStrategies.size();
     }
@@ -252,6 +274,11 @@ public class GameModel implements IObservable, IGameModel {
 
     @Override
     public void registerCmd(AbsGameCommand cmd) {
+        if (cmd instanceof PauseResumeGameCommand) {
+            cmd.extExecute();
+            return;
+        }
+        if (pause) return;
         this.unexecutedCommands.add(cmd);
     }
 

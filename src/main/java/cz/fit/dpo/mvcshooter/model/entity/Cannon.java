@@ -17,6 +17,7 @@ public class Cannon extends GameObject {
     private static final IShootingMode singleShootingMode = new SingleShootingMode();
     private static final IShootingMode doubleShootingMode = new DoubleShootingMode();
 
+    private int magazine = GameConfig.MAGAZINE_SIZE;
     private float speed = GameConfig.INIT_SPEED;
     private float angle = GameConfig.INIT_ANGLE;
     private IShootingMode shootingMode;
@@ -49,6 +50,10 @@ public class Cannon extends GameObject {
         return this.speed;
     }
 
+    public int getMagazine() {
+        return magazine;
+    }
+
     public void setSpeed(float speed) {
         this.speed = speed;
     }
@@ -66,7 +71,9 @@ public class Cannon extends GameObject {
     }
 
     public void primitiveShoot() {
+        if (magazine <= 0) return;
         this.shootBatch.add(goFact.createMissile());
+        this.magazine--;
     }
 
     public void setDoubleShootingMode() {
@@ -89,6 +96,10 @@ public class Cannon extends GameObject {
 
     public void incPower() {
         this.speed += this.speedStep;
+    }
+
+    public void reload() {
+        magazine = GameConfig.MAGAZINE_SIZE;
     }
 
     public void decPower() {

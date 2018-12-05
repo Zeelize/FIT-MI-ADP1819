@@ -20,6 +20,6 @@ public class GameConfig {
     public static final float INIT_SPEED = 10.0f;
     public static final float INIT_ANGLE = 0.0f;
 
-    public static final double BALISTIC_COEFFICIENT = 0.03;
-
+    public static final double BALISTIC_COEFFICIENT = 0.006;
+    public static final int MAGAZINE_SIZE = 10;
 }
