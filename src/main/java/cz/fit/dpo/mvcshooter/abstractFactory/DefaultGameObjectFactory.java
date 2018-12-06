@@ -22,8 +22,7 @@ public class DefaultGameObjectFactory implements IGameObjectFactory {
         int x = (this.model.getConfWidth() / 3) + random.nextInt(this.model.getConfWidth() - (this.model.getConfWidth() / 3));
         int y = random.nextInt(this.model.getConfHeight());
 
-        // todo change back to 0.0f
-        return new Enemy(x, y, 10.0f);
+        return new Enemy(x, y, (float) (model.getLevel() - 1));
     }
 
     public Missile createMissile() {

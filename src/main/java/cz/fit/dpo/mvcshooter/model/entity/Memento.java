@@ -7,6 +7,16 @@ public class Memento {
     private ArrayList<Missile> missiles = new ArrayList<Missile>();
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private int score;
+    private short level;
+
+    public short getLevel() {
+        return level;
+    }
+
+    public void setLevel(short level) {
+        this.level = level;
+    }
+
     private int activeMovementStrategyIndex;
 
     public Memento() {
@@ -26,7 +36,7 @@ public class Memento {
     }
 
     public void setMissiles(ArrayList<Missile> missiles) {
-        this.missiles = new ArrayList<Missile>(missiles);
+        this.missiles = new ArrayList<>(missiles);
     }
 
     public ArrayList<Enemy> getEnemies() {

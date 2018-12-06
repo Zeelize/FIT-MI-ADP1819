@@ -4,6 +4,7 @@ import cz.fit.dpo.mvcshooter.abstractFactory.DefaultGameObjectFactory;
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
 import cz.fit.dpo.mvcshooter.command.AbsGameCommand;
 import cz.fit.dpo.mvcshooter.command.PauseResumeGameCommand;
+import cz.fit.dpo.mvcshooter.command.UndoLastCommand;
 import cz.fit.dpo.mvcshooter.config.GameConfig;
 import cz.fit.dpo.mvcshooter.model.entity.*;
 import cz.fit.dpo.mvcshooter.observer.IObservable;
@@ -21,6 +22,7 @@ public class GameModel implements IObservable, IGameModel {
     private final List<IMovementStrategy> movementStrategies = new ArrayList<>();
     private Cannon cannon;
     private int score = GameConfig.INIT_SCORE;
+    private short level = 1;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Missile> missiles = new ArrayList<>();
     private ArrayList<Collision> collisions = new ArrayList<>();
@@ -50,8 +52,21 @@ public class GameModel implements IObservable, IGameModel {
             public void run() {
                 executeCommands();
                 moveGameObjects();
+                //checkWin();
             }
         }, 0, GameConfig.TIME_PERIOD);
+    }
+
+    private void checkWin() {
+        // todo write timer, how long does that took and re-init everything
+        if (score > 100) {
+
+        }
+    }
+
+    public void startGame() {
+        // todo on enter click, start game, only if the game is not running
+
     }
 
     private void executeCommands() {
@@ -115,8 +130,12 @@ public class GameModel implements IObservable, IGameModel {
     }
 
     private void moveEnemies() {
-        // todo check score and if at certain point, increase speed of enemies
+        boolean incSpeed = score >= level * 10;
+        if (incSpeed) level++;
         for (Enemy e : this.enemies) {
+            if (incSpeed) {
+                e.incSpeed();
+            }
             e.move();
         }
     }
@@ -150,6 +169,10 @@ public class GameModel implements IObservable, IGameModel {
         for (int i = 0; i < GameConfig.MAX_ENEMIES; i++) {
             this.enemies.add(this.goFact.createEnemy());
         }
+    }
+
+    public short getLevel() {
+        return level;
     }
 
     public int getScore() {
@@ -287,6 +310,10 @@ public class GameModel implements IObservable, IGameModel {
             return;
         }
         if (pause) return;
+        if (cmd instanceof UndoLastCommand) {
+            cmd.extExecute();
+            return;
+        }
         this.unexecutedCommands.add(cmd);
     }
 
@@ -304,16 +331,19 @@ public class GameModel implements IObservable, IGameModel {
         this.activeMovementStrategyIndex = m.getActiveMovementStrategyIndex();
         this.enemies = m.getEnemies();
         this.missiles = m.getMissiles();
+        this.level = m.getLevel();
     }
 
     @Override
     public Object createMemento() {
+        // todo create deep copy of cannon, missiles and enemies
         Memento m = new Memento();
         m.setActiveMovementStrategyIndex(this.activeMovementStrategyIndex);
         m.setCannon(this.cannon);
         m.setEnemies(this.enemies);
         m.setMissiles(this.missiles);
         m.setScore(this.score);
+        m.setLevel(this.level);
 
         return m;
     }

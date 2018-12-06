@@ -35,7 +35,10 @@ public class Cannon extends GameObject {
         this.shootingMode = singleShootingMode;
 
         this.goFact = goFact;
+    }
 
+    public Cannon(Cannon c) {
+        // todo complete
     }
 
     public float getAngle() {
@@ -99,7 +102,9 @@ public class Cannon extends GameObject {
     }
 
     public void reload() {
-        magazine = GameConfig.MAGAZINE_SIZE;
+        if (magazine <= 0) {
+            magazine = GameConfig.MAGAZINE_SIZE;
+        }
     }
 
     public void decPower() {

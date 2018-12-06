@@ -19,6 +19,26 @@ public class Missile extends MovingObject {
         this.setPosY(y);
     }
 
+    public Missile(Missile m) {
+        this.setAngle(m.getAngle());
+        this.setSpeed(m.getSpeed());
+        this.setInitX(m.getInitX());
+        this.setInitY(m.getInitY());
+        this.setTime(m.getTime());
+        this.setStrategy(m.getStrategy());
+
+        this.setPosX(m.getPosX());
+        this.setPosY(m.getPosY());
+    }
+
+    public IMovementStrategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(IMovementStrategy strategy) {
+        this.strategy = strategy;
+    }
+
     public void move() {
         setTime(getTime() + 1);
         long lifetime = getTime();

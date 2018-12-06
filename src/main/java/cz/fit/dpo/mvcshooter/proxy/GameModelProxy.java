@@ -20,6 +20,16 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
+    public short getLevel() {
+        return subject.getLevel();
+    }
+
+    @Override
+    public boolean getPause() {
+        return subject.getPause();
+    }
+
+    @Override
     public int getConfHeight() {
         return subject.getConfHeight();
     }
@@ -47,6 +57,11 @@ public class GameModelProxy implements IGameModel {
     @Override
     public GameInfo getInfo() {
         return subject.getInfo();
+    }
+
+    @Override
+    public void startGame() {
+        subject.startGame();
     }
 
     @Override

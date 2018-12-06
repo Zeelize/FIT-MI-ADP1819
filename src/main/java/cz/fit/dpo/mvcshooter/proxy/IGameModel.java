@@ -11,6 +11,10 @@ public interface IGameModel {
     // all public methods of the game model
     int getScore();
 
+    short getLevel();
+
+    boolean getPause();
+
     int getConfHeight();
 
     int getConfWidth();
@@ -22,6 +26,8 @@ public interface IGameModel {
     ArrayList<Missile> getMissiles();
 
     GameInfo getInfo();
+
+    void startGame();
 
     void moveCannonDown();
 
