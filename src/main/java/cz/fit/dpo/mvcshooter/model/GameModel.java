@@ -336,10 +336,9 @@ public class GameModel implements IObservable, IGameModel {
 
     @Override
     public Object createMemento() {
-        // todo create deep copy of cannon, missiles and enemies
         Memento m = new Memento();
         m.setActiveMovementStrategyIndex(this.activeMovementStrategyIndex);
-        m.setCannon(this.cannon);
+        m.setCannon(new Cannon(this.cannon));
         m.setEnemies(this.enemies);
         m.setMissiles(this.missiles);
         m.setScore(this.score);

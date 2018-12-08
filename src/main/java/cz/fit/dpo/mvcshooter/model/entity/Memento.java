@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Memento {
     private Cannon cannon;
-    private ArrayList<Missile> missiles = new ArrayList<Missile>();
-    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    private ArrayList<Missile> missiles = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private int score;
     private short level;
 
@@ -36,7 +36,11 @@ public class Memento {
     }
 
     public void setMissiles(ArrayList<Missile> missiles) {
-        this.missiles = new ArrayList<>(missiles);
+        ArrayList<Missile> newMissiles = new ArrayList<>();
+        for (Missile m : missiles) {
+            newMissiles.add(new Missile(m));
+        }
+        this.missiles = newMissiles;
     }
 
     public ArrayList<Enemy> getEnemies() {
@@ -44,7 +48,11 @@ public class Memento {
     }
 
     public void setEnemies(ArrayList<Enemy> enemies) {
-        this.enemies = new ArrayList<Enemy>(enemies);
+        ArrayList<Enemy> newEnemies = new ArrayList<>();
+        for (Enemy e : enemies) {
+            newEnemies.add(new Enemy(e));
+        }
+        this.enemies = newEnemies;
     }
 
     public int getActiveMovementStrategyIndex() {

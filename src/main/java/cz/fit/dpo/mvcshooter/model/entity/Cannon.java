@@ -16,17 +16,15 @@ import java.util.List;
 public class Cannon extends GameObject {
     private static final IShootingMode singleShootingMode = new SingleShootingMode();
     private static final IShootingMode doubleShootingMode = new DoubleShootingMode();
-
-    private int magazine = GameConfig.MAGAZINE_SIZE;
-    private float speed = GameConfig.INIT_SPEED;
-    private float angle = GameConfig.INIT_ANGLE;
-    private IShootingMode shootingMode;
-    private IGameObjectFactory goFact;
-    private List<Missile> shootBatch;
-
     private float angleStep = GameConfig.ANGLE_STEP;
     private float speedStep = GameConfig.SPEED_STEP;
 
+    private int magazine;
+    private float speed;
+    private float angle;
+    private IShootingMode shootingMode;
+    private IGameObjectFactory goFact;
+    private List<Missile> shootBatch;
 
     public Cannon(IGameObjectFactory goFact) {
         this.setPosX(GameConfig.INIT_CANNON_X);
@@ -34,11 +32,32 @@ public class Cannon extends GameObject {
 
         this.shootingMode = singleShootingMode;
 
+        this.magazine = GameConfig.MAGAZINE_SIZE;
+        this.speed = GameConfig.INIT_SPEED;
+        this.angle = GameConfig.INIT_ANGLE;
+
         this.goFact = goFact;
     }
 
     public Cannon(Cannon c) {
-        // todo complete
+        this.setPosX(c.getPosX());
+        this.setPosY(c.getPosY());
+
+        this.shootingMode = c.getShootingMode();
+
+        this.magazine = c.getMagazine();
+        this.speed = c.getSpeed();
+        this.angle = c.getAngle();
+
+        this.goFact = c.getGoFact();
+    }
+
+    public IShootingMode getShootingMode() {
+        return shootingMode;
+    }
+
+    public IGameObjectFactory getGoFact() {
+        return goFact;
     }
 
     public float getAngle() {
