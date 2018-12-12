@@ -305,15 +305,16 @@ public class GameModel implements IObservable, IGameModel {
 
     @Override
     public void registerCmd(AbsGameCommand cmd) {
+        if (cmd instanceof UndoLastCommand) {
+            cmd.extExecute();
+            notifyObservers();
+            return;
+        }
         if (cmd instanceof PauseResumeGameCommand) {
             cmd.extExecute();
             return;
         }
         if (pause) return;
-        if (cmd instanceof UndoLastCommand) {
-            cmd.extExecute();
-            return;
-        }
         this.unexecutedCommands.add(cmd);
     }
 

@@ -4,7 +4,7 @@ import cz.fit.dpo.mvcshooter.proxy.IGameModel;
 
 public abstract class AbsGameCommand {
     protected IGameModel subject;
-    protected Object memento;
+    private Object memento;
 
     public AbsGameCommand(IGameModel subject) {
         this.subject = subject;
