@@ -20,10 +20,15 @@ public class GameInfo extends GameObject {
                 + " Speed: " + this.model.getCannon().getSpeed()
                 + " Enemies: " + this.model.getEnemies().size()
                 + " Missiles: " + this.model.getMissiles().size()
-                + " Magazine: " + this.model.getCannon().getMagazine() + "/" + GameConfig.MAGAZINE_SIZE;
+                + " Magazine: " + this.model.getCannon().getMagazine() + "/" + GameConfig.MAGAZINE_SIZE
+                + " Time: " + this.model.getStopwatch() + " seconds";
 
         if (this.model.getPause()) {
             text += " -----PAUSED-----";
+        }
+
+        if (!this.model.getRunGame()) {
+            text += " -----TO START NEW GAME, PRESS <ENTER>-----";
         }
         return text;
     }

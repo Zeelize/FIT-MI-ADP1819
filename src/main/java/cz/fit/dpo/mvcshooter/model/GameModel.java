@@ -4,6 +4,7 @@ import cz.fit.dpo.mvcshooter.abstractFactory.DefaultGameObjectFactory;
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
 import cz.fit.dpo.mvcshooter.command.AbsGameCommand;
 import cz.fit.dpo.mvcshooter.command.PauseResumeGameCommand;
+import cz.fit.dpo.mvcshooter.command.StartGameCommand;
 import cz.fit.dpo.mvcshooter.command.UndoLastCommand;
 import cz.fit.dpo.mvcshooter.config.GameConfig;
 import cz.fit.dpo.mvcshooter.model.entity.*;
@@ -21,28 +22,54 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class GameModel implements IObservable, IGameModel {
     private final List<IMovementStrategy> movementStrategies = new ArrayList<>();
     private Cannon cannon;
-    private int score = GameConfig.INIT_SCORE;
-    private short level = 1;
-    private ArrayList<Enemy> enemies = new ArrayList<>();
-    private ArrayList<Missile> missiles = new ArrayList<>();
-    private ArrayList<Collision> collisions = new ArrayList<>();
-    private int activeMovementStrategyIndex = 0;
-    private boolean pause = false;
+    private final IGameObjectFactory goFact = new DefaultGameObjectFactory(this);
+    private int score;
+    private boolean runGame;
+    private short level;
+    private long stopwatch;
+    private ArrayList<Enemy> enemies;
+    private ArrayList<Missile> missiles;
+    private ArrayList<Collision> collisions;
+    private int activeMovementStrategyIndex;
+    private boolean pause;
     private ArrayList<IObserver> myObservers = new ArrayList<>();
-
-    private Queue<AbsGameCommand> unexecutedCommands = new LinkedBlockingQueue<>();
-    private Stack<AbsGameCommand> executedCommands = new Stack<>();
-
-    private IGameObjectFactory goFact = new DefaultGameObjectFactory(this);
+    private Queue<AbsGameCommand> unexecutedCommands;
+    private Stack<AbsGameCommand> executedCommands;
     private Timer timer;
 
     public GameModel() {
+        this.initGameModel();
+
         movementStrategies.add(new SimpleMovementStrategy());
         movementStrategies.add(new RandomMovementStrategy());
         movementStrategies.add(new RealisticMovementStrategy());
 
-        this.initTimer();
         this.initGameObjects();
+        this.initTimer();
+    }
+
+    private void initGameModel() {
+        this.score = GameConfig.INIT_SCORE;
+        this.level = 1;
+        this.enemies = new ArrayList<>();
+        this.missiles = new ArrayList<>();
+        this.collisions = new ArrayList<>();
+        this.activeMovementStrategyIndex = 0;
+        this.pause = false;
+        this.runGame = true;
+        this.stopwatch = 0;
+
+        this.unexecutedCommands = new LinkedBlockingQueue<>();
+        this.executedCommands = new Stack<>();
+    }
+
+    private void initGameObjects() {
+        this.cannon = this.goFact.createCannon();
+
+        this.enemies.clear();
+        for (int i = 0; i < GameConfig.MAX_ENEMIES; i++) {
+            this.enemies.add(this.goFact.createEnemy());
+        }
     }
 
     private void initTimer() {
@@ -52,21 +79,25 @@ public class GameModel implements IObservable, IGameModel {
             public void run() {
                 executeCommands();
                 moveGameObjects();
-                //checkWin();
+                checkWin();
+                stopwatch += GameConfig.TIME_PERIOD;
             }
         }, 0, GameConfig.TIME_PERIOD);
     }
 
     private void checkWin() {
-        // todo write timer, how long does that took and re-init everything
-        if (score > 100) {
-
-        }
+        if (score < GameConfig.SCORE_GOAL) return;
+        timer.cancel();
+        this.runGame = false;
+        notifyObservers();
     }
 
     public void startGame() {
-        // todo on enter click, start game, only if the game is not running
-
+        if (runGame) return;
+        initGameModel();
+        initGameObjects();
+        initTimer();
+        notifyObservers();
     }
 
     private void executeCommands() {
@@ -162,15 +193,6 @@ public class GameModel implements IObservable, IGameModel {
         }
     }
 
-    private void initGameObjects() {
-        this.cannon = this.goFact.createCannon();
-
-        this.enemies.clear();
-        for (int i = 0; i < GameConfig.MAX_ENEMIES; i++) {
-            this.enemies.add(this.goFact.createEnemy());
-        }
-    }
-
     public short getLevel() {
         return level;
     }
@@ -179,8 +201,18 @@ public class GameModel implements IObservable, IGameModel {
         return score;
     }
 
+    @Override
+    public long getStopwatch() {
+        return stopwatch / 1000;
+    }
+
     public boolean getPause() {
         return pause;
+    }
+
+    @Override
+    public boolean getRunGame() {
+        return runGame;
     }
 
     public int getConfHeight() {
@@ -305,9 +337,13 @@ public class GameModel implements IObservable, IGameModel {
 
     @Override
     public void registerCmd(AbsGameCommand cmd) {
+        if (cmd instanceof StartGameCommand) {
+            cmd.extExecute();
+            return;
+        }
+        if (!runGame) return;
         if (cmd instanceof UndoLastCommand) {
             cmd.extExecute();
-            notifyObservers();
             return;
         }
         if (cmd instanceof PauseResumeGameCommand) {
@@ -320,8 +356,10 @@ public class GameModel implements IObservable, IGameModel {
 
     @Override
     public void undoLastCmd() {
+        if (executedCommands.empty()) return;
         AbsGameCommand cmd = this.executedCommands.pop();
         cmd.unexecute();
+        notifyObservers();
     }
 
     @Override

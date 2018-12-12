@@ -20,6 +20,11 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
+    public long getStopwatch() {
+        return subject.getStopwatch();
+    }
+
+    @Override
     public short getLevel() {
         return subject.getLevel();
     }
@@ -27,6 +32,11 @@ public class GameModelProxy implements IGameModel {
     @Override
     public boolean getPause() {
         return subject.getPause();
+    }
+
+    @Override
+    public boolean getRunGame() {
+        return subject.getRunGame();
     }
 
     @Override

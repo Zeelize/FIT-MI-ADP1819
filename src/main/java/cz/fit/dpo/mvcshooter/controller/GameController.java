@@ -21,8 +21,7 @@ public class GameController {
 
         switch(evt.getKeyCode()) {
             case KeyEvent.VK_ENTER:
-                // todo complete it
-                //this.gameModel.registerCmd(new MoveUpCommand(this.gameModel));
+                this.gameModel.registerCmd(new StartGameCommand(this.gameModel));
                 break;
             case KeyEvent.VK_UP:
                 this.gameModel.registerCmd(new MoveUpCommand(this.gameModel));

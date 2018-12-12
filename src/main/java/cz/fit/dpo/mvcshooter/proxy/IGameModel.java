@@ -11,9 +11,13 @@ public interface IGameModel {
     // all public methods of the game model
     int getScore();
 
+    long getStopwatch();
+
     short getLevel();
 
     boolean getPause();
+
+    boolean getRunGame();
 
     int getConfHeight();
 
