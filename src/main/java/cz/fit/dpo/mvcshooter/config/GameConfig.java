@@ -24,5 +24,5 @@ public class GameConfig {
     public static final double BALISTIC_COEFFICIENT = 0.02;
     public static final int MAGAZINE_SIZE = 10;
 
-    public static final int SCORE_GOAL = 100;
+    public static final int SCORE_GOAL = 20;
 }

@@ -9,6 +9,11 @@ public class Memento {
     private int score;
     private short level;
 
+    private int activeMovementStrategyIndex;
+
+    public Memento() {
+    }
+
     public short getLevel() {
         return level;
     }
@@ -17,10 +22,6 @@ public class Memento {
         this.level = level;
     }
 
-    private int activeMovementStrategyIndex;
-
-    public Memento() {
-    }
 
     public Cannon getCannon() {
         return cannon;
