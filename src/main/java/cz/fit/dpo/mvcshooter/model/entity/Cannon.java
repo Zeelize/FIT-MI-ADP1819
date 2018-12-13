@@ -2,6 +2,7 @@ package cz.fit.dpo.mvcshooter.model.entity;
 
 import cz.fit.dpo.mvcshooter.abstractFactory.IGameObjectFactory;
 import cz.fit.dpo.mvcshooter.config.GameConfig;
+import cz.fit.dpo.mvcshooter.sound.SoundPlayer;
 import cz.fit.dpo.mvcshooter.state.DoubleShootingMode;
 import cz.fit.dpo.mvcshooter.state.IShootingMode;
 import cz.fit.dpo.mvcshooter.state.SingleShootingMode;
@@ -93,7 +94,11 @@ public class Cannon extends GameObject {
     }
 
     public void primitiveShoot() {
-        if (magazine <= 0) return;
+        if (magazine <= 0) {
+            SoundPlayer.playEmptyMagazineEffect();
+            return;
+        }
+        SoundPlayer.playShootEffect();
         this.shootBatch.add(goFact.createMissile());
         this.magazine--;
     }
@@ -137,9 +142,9 @@ public class Cannon extends GameObject {
     }
 
     public void reload() {
-        if (magazine <= 0) {
-            magazine = GameConfig.MAGAZINE_SIZE;
-        }
+        if (magazine > 0) return;
+        SoundPlayer.playReloadEffect();
+        magazine = GameConfig.MAGAZINE_SIZE;
     }
 
     public void decPower() {

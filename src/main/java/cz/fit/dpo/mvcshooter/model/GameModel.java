@@ -11,6 +11,7 @@ import cz.fit.dpo.mvcshooter.model.entity.*;
 import cz.fit.dpo.mvcshooter.observer.IObservable;
 import cz.fit.dpo.mvcshooter.observer.IObserver;
 import cz.fit.dpo.mvcshooter.proxy.IGameModel;
+import cz.fit.dpo.mvcshooter.sound.SoundPlayer;
 import cz.fit.dpo.mvcshooter.strategy.IMovementStrategy;
 import cz.fit.dpo.mvcshooter.strategy.RandomMovementStrategy;
 import cz.fit.dpo.mvcshooter.strategy.RealisticMovementStrategy;
@@ -129,6 +130,7 @@ public class GameModel implements IObservable, IGameModel {
         for (Missile m : missiles) {
             for (Enemy e : enemies) {
                 if (m.collidesWith(e)) {
+                    SoundPlayer.playCollisionEffect();
                     this.score++;
 
                     enemiesToRemove.add(e);
@@ -165,14 +167,22 @@ public class GameModel implements IObservable, IGameModel {
     }
 
     private void moveEnemies() {
-        boolean incSpeed = score >= level * 10;
-        if (incSpeed) level++;
+        boolean incSpeed = checkNewLevel();
         for (Enemy e : this.enemies) {
             if (incSpeed) {
                 e.incSpeed();
             }
             e.move();
         }
+    }
+
+    private boolean checkNewLevel() {
+        boolean newLevel = score >= level * 10;
+        if (newLevel) {
+            SoundPlayer.playNewLevelEffect();
+            level++;
+        }
+        return newLevel;
     }
 
     private void removeBadMissiles() {

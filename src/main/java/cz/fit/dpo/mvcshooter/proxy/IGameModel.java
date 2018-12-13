@@ -31,6 +31,8 @@ public interface IGameModel {
 
     GameInfo getInfo();
 
+    void stopGame();
+
     void startGame();
 
     void moveCannonDown();

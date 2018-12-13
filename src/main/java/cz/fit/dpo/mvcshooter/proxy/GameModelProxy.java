@@ -75,6 +75,11 @@ public class GameModelProxy implements IGameModel {
     }
 
     @Override
+    public void stopGame() {
+        subject.stopGame();
+    }
+
+    @Override
     public void moveCannonDown() {
         subject.moveCannonDown();
     }
