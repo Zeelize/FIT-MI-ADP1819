@@ -106,6 +106,14 @@ public class Cannon extends GameObject {
         shootingMode = singleShootingMode;
     }
 
+    public void moveUp() {
+        setPosY(getPosY() - GameConfig.MOVE_STEP);
+    }
+
+    public void moveDown() {
+        setPosY(getPosY() + GameConfig.MOVE_STEP);
+    }
+
     public void aimUp() {
         if (this.angle + this.angleStep > 90.0f) return;
         this.angle += this.angleStep;
@@ -114,6 +122,14 @@ public class Cannon extends GameObject {
     public void aimDown() {
         if (this.angle - this.angleStep < -90.0f) return;
         this.angle -= this.angleStep;
+    }
+
+    public float getAngleStep() {
+        return angleStep;
+    }
+
+    public float getSpeedStep() {
+        return speedStep;
     }
 
     public void incPower() {

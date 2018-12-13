@@ -87,6 +87,10 @@ public class GameModel implements IObservable, IGameModel {
 
     private void checkWin() {
         if (score < GameConfig.SCORE_GOAL) return;
+        stopGame();
+    }
+
+    public void stopGame() {
         timer.cancel();
         this.runGame = false;
         notifyObservers();
@@ -241,14 +245,16 @@ public class GameModel implements IObservable, IGameModel {
 
     public void moveCannonDown() {
         if (cannon.getPosY() + GameConfig.MOVE_STEP > GameConfig.MAX_HEIGHT) return;
-        cannon.setPosY(cannon.getPosY() + GameConfig.MOVE_STEP);
+        //cannon.setPosY(cannon.getPosY() + GameConfig.MOVE_STEP);
+        cannon.moveDown();
 
         this.notifyObservers();
     }
 
     public void moveCannonUp() {
         if (cannon.getPosY() + GameConfig.MOVE_STEP - 50 < 0) return;
-        cannon.setPosY(cannon.getPosY() - GameConfig.MOVE_STEP);
+        //cannon.setPosY(cannon.getPosY() - GameConfig.MOVE_STEP);
+        cannon.moveUp();
 
         this.notifyObservers();
     }
